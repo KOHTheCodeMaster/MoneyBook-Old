@@ -72,13 +72,12 @@ public class AccountPojo {
 
     }
 
-    public static void summary(Map<String, AccountPojo> accountMap) {
-
-        System.out.println("\nAccounts Summary:");
-        accountMap.forEach((strAccountName, accountPojo) -> System.out.println(strAccountName + " -> " + accountPojo.getBalance()));
-
+    public void creditBalance(BigDecimal amount) {
+        balance = balance.add(amount);
     }
-
+    public void debitBalance(BigDecimal amount) {
+        balance = balance.subtract(amount);
+    }
     @Override
     public String toString() {
         return "Id: " + id +

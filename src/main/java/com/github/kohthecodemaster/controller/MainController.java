@@ -41,11 +41,36 @@ public class MainController {
 
     public void testTxnProcessing() {
 
-        AccountPojo.summary(accountMap);
-
         transactionPojoList.forEach(this::processTxn);
 
-        AccountPojo.summary(accountMap);
+        summary();
+
+    }
+
+    private void summary() {
+
+        BigDecimal totalAccounts = BigDecimal.ZERO;
+        BigDecimal totalCards = BigDecimal.ZERO;
+
+        for (Map.Entry<String, AccountPojo> entry : accountMap.entrySet()) {
+            String strAccountName = entry.getKey();
+            AccountPojo accountPojo = entry.getValue();
+            if (accountPojo.getBalance().compareTo(BigDecimal.ZERO) != 0) {
+                System.out.println(strAccountName + " -> " + accountPojo.getBalance());
+                totalAccounts = totalAccounts.add(accountPojo.getBalance());
+            }
+        }
+
+        for (Map.Entry<String, CreditCardPojo> entry : creditCardsMap.entrySet()) {
+            String last4Digits = entry.getKey();
+            CreditCardPojo creditCardPojo = entry.getValue();
+            if (creditCardPojo.getBalance().compareTo(BigDecimal.ZERO) != 0) {
+                System.out.println(last4Digits + " -> " + creditCardPojo.getBalance());
+                totalCards = totalCards.add(creditCardPojo.getBalance());
+            }
+        }
+
+        System.out.println("Acc Total: " + totalAccounts + " | Cards Total: " + totalCards + " | Diff: " + totalAccounts.add(totalCards));
 
     }
 
@@ -57,17 +82,9 @@ public class MainController {
 
         AccountPojo sourceAccountPojo = accountMap.get(transactionPojo.getSourceAccount());
 
-        if (transactionPojo.getTransactionType() == TransactionType.Income) {
-            //  Add Amount
-            sourceAccountPojo.setBalance(
-                    sourceAccountPojo.getBalance().add(transactionPojo.getAmount())
-            );
-        } else if (transactionPojo.getTransactionType() == TransactionType.Expense) {
-            //  Deduct Amount
-            sourceAccountPojo.setBalance(
-                    sourceAccountPojo.getBalance().subtract(transactionPojo.getAmount())
-            );
-        } else if (transactionPojo.getTransactionType() == TransactionType.Transfer) {
+        if (transactionPojo.getTransactionType() == TransactionType.Income) sourceAccountPojo.creditBalance(transactionPojo.getAmount());
+        else if (transactionPojo.getTransactionType() == TransactionType.Expense) sourceAccountPojo.debitBalance(transactionPojo.getAmount());
+        else if (transactionPojo.getTransactionType() == TransactionType.Transfer) {
 
             AccountPojo targetAccountPojo = accountMap.get(transactionPojo.getTargetAccount());
             BigDecimal amount = transactionPojo.getAmount();
