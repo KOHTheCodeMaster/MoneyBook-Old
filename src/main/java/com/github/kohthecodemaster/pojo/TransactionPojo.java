@@ -29,6 +29,21 @@ public class TransactionPojo {
     String note;
     @SerializedName("Credit Card Description")
     String creditCardDescription;
+    @SerializedName("Closing Balance")
+    BigDecimal closingBalance;
+
+    public TransactionPojo(TransactionPojo transactionPojo) {
+        this.transactionId = transactionPojo.getTransactionId();
+        this.date = transactionPojo.getDate();
+        this.sourceAccount = transactionPojo.getSourceAccount();
+        this.targetAccount = transactionPojo.getTargetAccount();
+        this.category = transactionPojo.getCategory();
+        this.transactionType = transactionPojo.getTransactionType();
+        this.amount = transactionPojo.getAmount();
+        this.note = transactionPojo.getNote();
+        this.creditCardDescription = transactionPojo.getCreditCardDescription();
+        this.closingBalance = transactionPojo.getClosingBalance();
+    }
 
     public static List<TransactionPojo> loadTransactionPojoListFromJson(File jsonFile) {
 
@@ -52,6 +67,7 @@ public class TransactionPojo {
                 "\nAmount: " + amount +
                 "\nNote: " + note +
                 "\nCredit Card Description: " + creditCardDescription +
+                "\nClosing Balance: " + closingBalance +
                 "\n";
     }
 
@@ -125,5 +141,13 @@ public class TransactionPojo {
 
     public void setCreditCardDescription(String creditCardDescription) {
         this.creditCardDescription = creditCardDescription;
+    }
+
+    public BigDecimal getClosingBalance() {
+        return closingBalance;
+    }
+
+    public void setClosingBalance(BigDecimal closingBalance) {
+        this.closingBalance = closingBalance;
     }
 }

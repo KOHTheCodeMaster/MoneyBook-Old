@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CreditCardPojo {
@@ -23,6 +24,7 @@ public class CreditCardPojo {
     BigDecimal maxLimit;
     @SerializedName("Balance")
     BigDecimal balance;
+    List<TransactionPojo> transactionPojoList = new ArrayList<>();
 
     public static List<CreditCardPojo> loadCreditCardPojoListFromJson(File jsonFile) {
 
@@ -33,6 +35,11 @@ public class CreditCardPojo {
         List<CreditCardPojo> creditCardPojoList = (List<CreditCardPojo>) JsonController.parseJsonFileToList(jsonFile, type);
         return creditCardPojoList;
 
+    }
+
+    public void logTransaction(TransactionPojo transactionPojo) {
+        transactionPojo.setClosingBalance(balance);
+        transactionPojoList.add(transactionPojo);
     }
 
     @Override
@@ -93,5 +100,9 @@ public class CreditCardPojo {
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
+    }
+
+    public List<TransactionPojo> getTransactionPojoList() {
+        return transactionPojoList;
     }
 }

@@ -70,6 +70,10 @@ public class MainController {
             }
         }
 
+        System.out.println("\n======\n");
+        AccountPojo accountPojo = accountMap.get("PayTM Business Wallet");
+        accountPojo.getTransactionPojoList().forEach(System.out::println);
+
         System.out.println("Acc Total: " + totalAccounts + " | Cards Total: " + totalCards + " | Diff: " + totalAccounts.add(totalCards));
 
     }
@@ -82,8 +86,10 @@ public class MainController {
 
         AccountPojo sourceAccountPojo = accountMap.get(transactionPojo.getSourceAccount());
 
-        if (transactionPojo.getTransactionType() == TransactionType.Income) sourceAccountPojo.creditBalance(transactionPojo.getAmount());
-        else if (transactionPojo.getTransactionType() == TransactionType.Expense) sourceAccountPojo.debitBalance(transactionPojo.getAmount());
+        if (transactionPojo.getTransactionType() == TransactionType.Income)
+            sourceAccountPojo.creditBalance(transactionPojo);
+        else if (transactionPojo.getTransactionType() == TransactionType.Expense)
+            sourceAccountPojo.debitBalance(transactionPojo);
         else if (transactionPojo.getTransactionType() == TransactionType.Transfer) {
 
             AccountPojo targetAccountPojo = accountMap.get(transactionPojo.getTargetAccount());
@@ -94,21 +100,21 @@ public class MainController {
                     targetAccountPojo != null) {
 
                 //  Source & Target Account Both are NOT A Credit Card
-                AccountPojo.transferBalance(sourceAccountPojo, targetAccountPojo, amount);
+                AccountPojo.transferBalance(sourceAccountPojo, targetAccountPojo, transactionPojo);
 
             } else if (sourceAccountPojo == null &&
                     targetAccountPojo != null) {
 
                 //  Source IS A Credit Card  AND  Target Account IS NOT A Credit Card
                 CreditCardPojo sourceCreditCardPojo = creditCardsMap.get(transactionPojo.getSourceAccount());//  Last 4 Digits
-                AccountPojo.transferBalance(sourceCreditCardPojo, targetAccountPojo, amount);
+                AccountPojo.transferBalance(sourceCreditCardPojo, targetAccountPojo, transactionPojo);
 
             } else if (sourceAccountPojo != null &&
                     targetAccountPojo == null) {
 
                 //  Source Account IS NOT A Credit Card  AND  Target IS A Credit Card
                 CreditCardPojo targetCreditCardPojo = creditCardsMap.get(transactionPojo.getTargetAccount());//  Last 4 Digits
-                AccountPojo.transferBalance(sourceAccountPojo, targetCreditCardPojo, amount);
+                AccountPojo.transferBalance(sourceAccountPojo, targetCreditCardPojo, transactionPojo);
 
             } else {
                 System.out.println("INVALID Scenario - Failed to Process Transaction:\n" + transactionPojo);

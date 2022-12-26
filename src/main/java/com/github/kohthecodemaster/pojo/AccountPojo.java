@@ -7,8 +7,8 @@ import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class AccountPojo {
 
@@ -18,6 +18,7 @@ public class AccountPojo {
     String name;
     @SerializedName("Balance")
     BigDecimal balance;
+    List<TransactionPojo> transactionPojoList = new ArrayList<>();
 
     public static List<AccountPojo> loadAccountPojoListFromJson(File jsonFile) {
 
@@ -30,66 +31,88 @@ public class AccountPojo {
 
     }
 
-    public static void transferBalance(AccountPojo sourceAccountPojo, AccountPojo targetAccountPojo, BigDecimal amount) {
+    public static void transferBalance(AccountPojo sourceAccountPojo, AccountPojo targetAccountPojo, TransactionPojo transactionPojo) {
 
         BigDecimal sourceBalance = sourceAccountPojo.getBalance();
         BigDecimal targetBalance = targetAccountPojo.getBalance();
 
-        targetBalance = targetBalance.add(amount);          //  Add Amount to Target Balance
-        sourceBalance = sourceBalance.subtract(amount);     //  Deduct Amount from Source Balance
+        targetBalance = targetBalance.add(transactionPojo.getAmount());          //  Add Amount to Target Balance
+        sourceBalance = sourceBalance.subtract(transactionPojo.getAmount());     //  Deduct Amount from Source Balance
 
         //  Update target & source balance
         targetAccountPojo.setBalance(targetBalance);
         sourceAccountPojo.setBalance(sourceBalance);
 
+        //  Using Copy Constructor to avoid conflict of updating closing balance field for
+        //  sourceAccountPojo's transactionPojoList
+        sourceAccountPojo.logTransaction(transactionPojo);
+        targetAccountPojo.logTransaction(new TransactionPojo(transactionPojo));
+
+
     }
 
-    public static void transferBalance(CreditCardPojo creditCardPojo, AccountPojo targetAccountPojo, BigDecimal amount) {
+    public static void transferBalance(CreditCardPojo creditCardPojo, AccountPojo targetAccountPojo, TransactionPojo transactionPojo) {
 
         BigDecimal sourceBalance = creditCardPojo.getBalance();
         BigDecimal targetBalance = targetAccountPojo.getBalance();
 
-        targetBalance = targetBalance.add(amount);          //  Add Amount to Target Balance
-        sourceBalance = sourceBalance.subtract(amount);     //  Deduct Amount from Source Balance
+        targetBalance = targetBalance.add(transactionPojo.getAmount());          //  Add Amount to Target Balance
+        sourceBalance = sourceBalance.subtract(transactionPojo.getAmount());     //  Deduct Amount from Source Balance
 
         //  Update target & source balance
         targetAccountPojo.setBalance(targetBalance);
         creditCardPojo.setBalance(sourceBalance);
 
+        creditCardPojo.logTransaction(transactionPojo);
+        targetAccountPojo.logTransaction(new TransactionPojo(transactionPojo));
+
     }
 
-    public static void transferBalance(AccountPojo sourceAccountPojo, CreditCardPojo creditCardPojo, BigDecimal amount) {
+    public static void transferBalance(AccountPojo sourceAccountPojo, CreditCardPojo creditCardPojo, TransactionPojo transactionPojo) {
 
         BigDecimal sourceBalance = creditCardPojo.getBalance();
         BigDecimal targetBalance = sourceAccountPojo.getBalance();
 
-        targetBalance = targetBalance.add(amount);          //  Add Amount to Target Balance
-        sourceBalance = sourceBalance.subtract(amount);     //  Deduct Amount from Source Balance
+        targetBalance = targetBalance.add(transactionPojo.getAmount());          //  Add Amount to Target Balance
+        sourceBalance = sourceBalance.subtract(transactionPojo.getAmount());     //  Deduct Amount from Source Balance
 
         //  Update target & source balance
         sourceAccountPojo.setBalance(targetBalance);
         creditCardPojo.setBalance(sourceBalance);
 
+        sourceAccountPojo.logTransaction(transactionPojo);
+        creditCardPojo.logTransaction(new TransactionPojo(transactionPojo));
+
     }
 
-    public void creditBalance(BigDecimal amount) {
-        balance = balance.add(amount);
+    public void creditBalance(TransactionPojo transactionPojo) {
+        balance = balance.add(transactionPojo.getAmount());
+        logTransaction(transactionPojo);
     }
-    public void debitBalance(BigDecimal amount) {
-        balance = balance.subtract(amount);
+
+    public void debitBalance(TransactionPojo transactionPojo) {
+        balance = balance.subtract(transactionPojo.getAmount());
+        logTransaction(transactionPojo);
     }
+
+    public void logTransaction(TransactionPojo transactionPojo) {
+        transactionPojo.setClosingBalance(balance);
+        transactionPojoList.add(transactionPojo);
+    }
+
     @Override
     public String toString() {
         return "Id: " + id +
                 "Account Name: " + name +
-                "Balance: " + balance;
+                "Balance: " + balance +
+                "Transaction Pojo List: " + transactionPojoList;
     }
 
-    public Integer getAccountId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setAccountId(Integer id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -107,5 +130,9 @@ public class AccountPojo {
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
+    }
+
+    public List<TransactionPojo> getTransactionPojoList() {
+        return transactionPojoList;
     }
 }
