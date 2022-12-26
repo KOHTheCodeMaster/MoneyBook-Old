@@ -1,0 +1,42 @@
+[
+  {
+    "Id": 1,
+    "Name": "BillPe Kotak",
+    "Balance": 0
+  },
+  {
+    "Id": 2,
+    "Name": "PayTM Business Wallet",
+    "Balance": 0
+  },
+  {
+    "Id": 3,
+    "Name": "KC HDFC",
+    "Balance": 0
+  },
+  {
+    "Id": 4,
+    "Name": "BharatPe Wallet",
+    "Balance": 0
+  },
+  {
+    "Id": 5,
+    "Name": "KOH UPI",
+    "Balance": 0
+  },
+  {
+    "Id": 6,
+    "Name": "PaPa UPI",
+    "Balance": 0
+  },
+  {
+    "Id": 7,
+    "Name": "Amma UPI",
+    "Balance": 0
+  },
+  {
+    "Id": 8,
+    "Name": "Ishu UPI",
+    "Balance": 0
+  }
+]

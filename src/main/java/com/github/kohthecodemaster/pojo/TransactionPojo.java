@@ -1,8 +1,13 @@
 package com.github.kohthecodemaster.pojo;
 
+import com.github.kohthecodemaster.utils.JsonController;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.File;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.util.List;
 
 public class TransactionPojo {
 
@@ -23,18 +28,28 @@ public class TransactionPojo {
     @SerializedName("Note")
     String note;
 
+    public static List<TransactionPojo> loadTransactionPojoListFromJson(File jsonFile) {
+
+        Type type = new TypeToken<List<TransactionPojo>>() {
+        }.getType();
+
+        @SuppressWarnings("unchecked")
+        List<TransactionPojo> transactionPojoList = (List<TransactionPojo>) JsonController.parseJsonFileToList(jsonFile, type);
+        return transactionPojoList;
+
+    }
+
     @Override
     public String toString() {
-        return "TransactionPojo{" +
-                "transactionId=" + transactionId +
-                ", date='" + date + '\'' +
-                ", sourceAccount='" + sourceAccount + '\'' +
-                ", targetAccount='" + targetAccount + '\'' +
-                ", category='" + category + '\'' +
-                ", transactionType=" + transactionType +
-                ", amount=" + amount +
-                ", note='" + note + '\'' +
-                '}';
+        return "Transaction Id: " + transactionId +
+                "\nDate: " + date +
+                "\nSource Account: " + sourceAccount +
+                "\nTarget Account: " + targetAccount +
+                "\nCategory: " + category +
+                "\nTransaction Type: " + transactionType +
+                "\nAmount: " + amount +
+                "\nNote: " + note +
+                "\n";
     }
 
     public Integer getTransactionId() {

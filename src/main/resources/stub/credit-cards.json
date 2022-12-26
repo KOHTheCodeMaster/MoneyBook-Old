@@ -1,0 +1,18 @@
+[
+  {
+    "Id": 1,
+    "Last 4 Digits": "4004",
+    "Card Holder Name": "KOH",
+    "Card Name": "Amazon ICICI",
+    "Balance": 100000,
+    "Max Limit": 100000
+  },
+  {
+    "Id": 2,
+    "Last 4 Digits": "0000",
+    "Card Holder Name": "Papa",
+    "Card Name": "Amazon ICICI",
+    "Balance": 50000,
+    "Max Limit": 50000
+  }
+]

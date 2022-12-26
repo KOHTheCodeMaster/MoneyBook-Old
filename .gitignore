@@ -4,3 +4,4 @@
 /out/production/
 /gradlew
 /gradlew.bat
+/src/main/resources/backup/stub/transactions.json
