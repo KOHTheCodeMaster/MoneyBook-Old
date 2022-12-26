@@ -1,0 +1,7 @@
+﻿"Id","Date","Source Account","Target Account","Category","Transaction Type","Amount","Note"
+1,"25 Feb 2022","Acc 1","","Manual","Income",100000,"Initial Seed Funding"
+2,"26 Feb 2022","Acc 1","","Manual","Expense",5000,"Partial Return Back Seed Funding - 95K Left"
+3,"27 Feb 2022","Acc 1","","Manual","Expense",85000,"Partial Return Back Seed Funding - 10K Left"
+4,"28 Mar 2022","Acc 1","Credit Card 1","","Transfer-Out",2000,"Credit Card Bill Payment"
+5,"28 Mar 2022","Acc 1","Credit Card 2","","Transfer-Out",3000,"Credit Card Bill Payment"
+5,"28 Mar 2022","Acc 2","Acc 1","","Transfer-Out",5000,"Manual UPI Entry for Maintaining Balance."
