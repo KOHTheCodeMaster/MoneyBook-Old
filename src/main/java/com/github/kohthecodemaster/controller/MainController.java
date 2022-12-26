@@ -3,9 +3,10 @@ package com.github.kohthecodemaster.controller;
 import com.github.kohthecodemaster.pojo.AccountPojo;
 import com.github.kohthecodemaster.pojo.CreditCardPojo;
 import com.github.kohthecodemaster.pojo.TransactionPojo;
-import com.github.kohthecodemaster.utils.TestingHelper;
+import com.github.kohthecodemaster.pojo.TransactionType;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,12 +30,77 @@ public class MainController {
 
     private void testing() {
 
-        TestingHelper testingHelper = new TestingHelper(transactionJsonFile, accountJsonFile, creditCardJsonFile);
-
+//        TestingHelper testingHelper = new TestingHelper(transactionJsonFile, accountJsonFile, creditCardJsonFile);
 //        testingHelper.testTransactionPojoListFromJson();
 //        testingHelper.testAccountPojoListFromJson();
 //        testingHelper.testCreditCardPojoListFromJson();
-        testingHelper.testTxnProcessing();
+
+        testTxnProcessing();
+
+    }
+
+    public void testTxnProcessing() {
+
+        AccountPojo.summary(accountMap);
+
+        transactionPojoList.forEach(this::processTxn);
+
+        AccountPojo.summary(accountMap);
+
+    }
+
+    private void processTxn(TransactionPojo transactionPojo) {
+
+//        System.out.println("Processing - Begin.");
+
+//        System.out.println(transactionPojo);
+
+        AccountPojo sourceAccountPojo = accountMap.get(transactionPojo.getSourceAccount());
+
+        if (transactionPojo.getTransactionType() == TransactionType.Income) {
+            //  Add Amount
+            sourceAccountPojo.setBalance(
+                    sourceAccountPojo.getBalance().add(transactionPojo.getAmount())
+            );
+        } else if (transactionPojo.getTransactionType() == TransactionType.Expense) {
+            //  Deduct Amount
+            sourceAccountPojo.setBalance(
+                    sourceAccountPojo.getBalance().subtract(transactionPojo.getAmount())
+            );
+        } else if (transactionPojo.getTransactionType() == TransactionType.Transfer) {
+
+            AccountPojo targetAccountPojo = accountMap.get(transactionPojo.getTargetAccount());
+            BigDecimal amount = transactionPojo.getAmount();
+
+            //  Transfer Amount from Source to Target Account based on Account & Credit Card scenario
+            if (sourceAccountPojo != null &&
+                    targetAccountPojo != null) {
+
+                //  Source & Target Account Both are NOT A Credit Card
+                AccountPojo.transferBalance(sourceAccountPojo, targetAccountPojo, amount);
+
+            } else if (sourceAccountPojo == null &&
+                    targetAccountPojo != null) {
+
+                //  Source IS A Credit Card  AND  Target Account IS NOT A Credit Card
+                CreditCardPojo sourceCreditCardPojo = creditCardsMap.get(transactionPojo.getSourceAccount());//  Last 4 Digits
+                AccountPojo.transferBalance(sourceCreditCardPojo, targetAccountPojo, amount);
+
+            } else if (sourceAccountPojo != null &&
+                    targetAccountPojo == null) {
+
+                //  Source Account IS NOT A Credit Card  AND  Target IS A Credit Card
+                CreditCardPojo targetCreditCardPojo = creditCardsMap.get(transactionPojo.getTargetAccount());//  Last 4 Digits
+                AccountPojo.transferBalance(sourceAccountPojo, targetCreditCardPojo, amount);
+
+            } else {
+                System.out.println("INVALID Scenario - Failed to Process Transaction:\n" + transactionPojo);
+            }
+        } else {
+            System.out.println("INVALID Scenario - Failed to Process Transaction:\n" + transactionPojo);
+        }
+
+//        System.out.println("Processing - Completed.");
 
     }
 

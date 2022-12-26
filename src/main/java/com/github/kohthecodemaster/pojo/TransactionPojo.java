@@ -27,6 +27,8 @@ public class TransactionPojo {
     BigDecimal amount;
     @SerializedName("Note")
     String note;
+    @SerializedName("Credit Card Description")
+    String creditCardDescription;
 
     public static List<TransactionPojo> loadTransactionPojoListFromJson(File jsonFile) {
 
@@ -49,6 +51,7 @@ public class TransactionPojo {
                 "\nTransaction Type: " + transactionType +
                 "\nAmount: " + amount +
                 "\nNote: " + note +
+                "\nCredit Card Description: " + creditCardDescription +
                 "\n";
     }
 
@@ -114,5 +117,13 @@ public class TransactionPojo {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getCreditCardDescription() {
+        return creditCardDescription;
+    }
+
+    public void setCreditCardDescription(String creditCardDescription) {
+        this.creditCardDescription = creditCardDescription;
     }
 }

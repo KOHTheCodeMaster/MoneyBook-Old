@@ -33,21 +33,23 @@
     "Id": 4,
     "Date": "28 Mar 2022",
     "Source Account": "Acc 1",
-    "Target Account": "Credit Card 1",
+    "Target Account": "4004",
     "Category": "",
-    "Transaction Type": "Transfer-Out",
+    "Transaction Type": "Transfer",
     "Amount": 2000,
-    "Note": "Credit Card Bill Payment"
+    "Note": "Credit Card Bill Payment",
+    "Credit Card Description": "KOH Amazon ICICI xx-4004"
   },
   {
     "Id": 5,
     "Date": "28 Mar 2022",
-    "Source Account": "Acc 1",
-    "Target Account": "Credit Card 2",
+    "Source Account": "0000",
+    "Target Account": "Acc 1",
     "Category": "",
-    "Transaction Type": "Transfer-Out",
+    "Transaction Type": "Transfer",
     "Amount": 3000,
-    "Note": "Credit Card Bill Payment"
+    "Note": "Credit Card Bill Payment",
+    "Credit Card Description": "Papa Amazon ICICI xx-0000"
   },
   {
     "Id": 6,
@@ -55,7 +57,7 @@
     "Source Account": "Acc 2",
     "Target Account": "Acc 1",
     "Category": "",
-    "Transaction Type": "Transfer-Out",
+    "Transaction Type": "Transfer",
     "Amount": 5000,
     "Note": "Manual UPI Entry for Maintaining Balance."
   }

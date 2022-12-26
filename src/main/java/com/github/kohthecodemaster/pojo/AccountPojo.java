@@ -8,6 +8,7 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public class AccountPojo {
 
@@ -29,17 +30,60 @@ public class AccountPojo {
 
     }
 
-    public void addAmount(BigDecimal amount) {
-        balance = balance.add(amount);
+    public static void transferBalance(AccountPojo sourceAccountPojo, AccountPojo targetAccountPojo, BigDecimal amount) {
+
+        BigDecimal sourceBalance = sourceAccountPojo.getBalance();
+        BigDecimal targetBalance = targetAccountPojo.getBalance();
+
+        targetBalance = targetBalance.add(amount);          //  Add Amount to Target Balance
+        sourceBalance = sourceBalance.subtract(amount);     //  Deduct Amount from Source Balance
+
+        //  Update target & source balance
+        targetAccountPojo.setBalance(targetBalance);
+        sourceAccountPojo.setBalance(sourceBalance);
+
+    }
+
+    public static void transferBalance(CreditCardPojo creditCardPojo, AccountPojo targetAccountPojo, BigDecimal amount) {
+
+        BigDecimal sourceBalance = creditCardPojo.getBalance();
+        BigDecimal targetBalance = targetAccountPojo.getBalance();
+
+        targetBalance = targetBalance.add(amount);          //  Add Amount to Target Balance
+        sourceBalance = sourceBalance.subtract(amount);     //  Deduct Amount from Source Balance
+
+        //  Update target & source balance
+        targetAccountPojo.setBalance(targetBalance);
+        creditCardPojo.setBalance(sourceBalance);
+
+    }
+
+    public static void transferBalance(AccountPojo sourceAccountPojo, CreditCardPojo creditCardPojo, BigDecimal amount) {
+
+        BigDecimal sourceBalance = creditCardPojo.getBalance();
+        BigDecimal targetBalance = sourceAccountPojo.getBalance();
+
+        targetBalance = targetBalance.add(amount);          //  Add Amount to Target Balance
+        sourceBalance = sourceBalance.subtract(amount);     //  Deduct Amount from Source Balance
+
+        //  Update target & source balance
+        sourceAccountPojo.setBalance(targetBalance);
+        creditCardPojo.setBalance(sourceBalance);
+
+    }
+
+    public static void summary(Map<String, AccountPojo> accountMap) {
+
+        System.out.println("\nAccounts Summary:");
+        accountMap.forEach((strAccountName, accountPojo) -> System.out.println(strAccountName + " -> " + accountPojo.getBalance()));
+
     }
 
     @Override
     public String toString() {
-        return "AccountPojo{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", balance=" + balance +
-                '}';
+        return "Id: " + id +
+                "Account Name: " + name +
+                "Balance: " + balance;
     }
 
     public Integer getAccountId() {

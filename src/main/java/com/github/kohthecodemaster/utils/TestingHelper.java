@@ -19,18 +19,6 @@ public class TestingHelper {
         this.creditCardJsonFile = creditCardJsonFile;
     }
 
-    public void testTxnProcessing() {
-
-        List<TransactionPojo> transactionPojoList = TransactionPojo.loadTransactionPojoListFromJson(transactionJsonFile);
-
-        transactionPojoList.forEach(this::processTxn);
-
-    }
-
-    private void processTxn(TransactionPojo transactionPojo) {
-        System.out.println("Processing - " + transactionPojo);
-    }
-
     public void testTransactionPojoListFromJson() {
 
         List<TransactionPojo> transactionPojoList = TransactionPojo.loadTransactionPojoListFromJson(transactionJsonFile);
@@ -39,6 +27,7 @@ public class TestingHelper {
         System.out.println("Size: " + transactionPojoList.size());
 
     }
+
     public void testAccountPojoListFromJson() {
 
         List<AccountPojo> accountPojoList = AccountPojo.loadAccountPojoListFromJson(accountJsonFile);
@@ -47,6 +36,7 @@ public class TestingHelper {
         System.out.println("Size: " + accountPojoList.size());
 
     }
+
     public void testCreditCardPojoListFromJson() {
 
         List<CreditCardPojo> creditCardPojoList = CreditCardPojo.loadCreditCardPojoListFromJson(creditCardJsonFile);
