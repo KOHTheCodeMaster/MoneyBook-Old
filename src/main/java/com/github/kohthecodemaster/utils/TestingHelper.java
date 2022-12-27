@@ -6,6 +6,7 @@ import com.github.kohthecodemaster.pojo.CreditCardPojo;
 import com.github.kohthecodemaster.pojo.TransactionPojo;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +52,6 @@ public class TestingHelper {
 
     }
 
-
     public void testCardSwipePojoListFromJson(Map<String, CreditCardPojo> creditCardsMap) {
 
         List<CardSwipeTransactionPojo> cardSwipeTransactionPojoList = CardSwipeTransactionPojo.loadCardSwipeTransactionPojoListFromJson(cardSwipeTransactionJsonFile);
@@ -80,4 +80,24 @@ public class TestingHelper {
         System.out.println("Card Swipe Transaction Pojo List Size: " + cardSwipeTransactionPojoList.size());
 
     }
+
+    public void checkDuplicateCardEntries() {
+
+        List<CreditCardPojo> creditCardPojoList = CreditCardPojo.loadCreditCardPojoListFromJson(creditCardJsonFile);
+        Map<String, Integer> map = new HashMap<>();
+        int duplicateCount = 0;
+
+        for (CreditCardPojo creditCardPojo : creditCardPojoList) {
+            Integer frequency = map.putIfAbsent(creditCardPojo.getLast4Digits(), 1);
+            if (frequency != null && frequency > 1) {
+                System.out.println("Duplicate Card Entry: " + creditCardPojo);
+                duplicateCount++;
+            }
+        }
+
+        if (duplicateCount != 0) System.out.println(duplicateCount + " - Duplicate Card Entries Exists.");
+        else System.out.println("NO Duplicate Card Entries Found.");
+
+    }
+
 }

@@ -30,16 +30,16 @@ public class TransactionPojo {
     @SerializedName("Closing Balance")
     BigDecimal closingBalance;
 
-    public TransactionPojo(CardSwipeTransactionPojo cardSwipeTxnPojo, int id,  BigDecimal amount,  String targetAccount, String category, String note) {
+    public TransactionPojo(CardSwipeTransactionPojo cardSwipeTxnPojo, int id,  BigDecimal amount,  String targetAccount, String category) {
         this.transactionId = id;
         this.date = cardSwipeTxnPojo.getDate();
         this.sourceAccount = cardSwipeTxnPojo.getLast4Digits();
         this.targetAccount = targetAccount;
         this.category = category;
         this.amount = amount;
-        this.creditCardDescription = cardSwipeTxnPojo.getCardHolderName() + " " +
-                cardSwipeTxnPojo.getCardName() + " xx-" + cardSwipeTxnPojo.getLast4Digits();
-        this.note = note + this.creditCardDescription;
+        this.creditCardDescription = cardSwipeTxnPojo.getCardHolderName() + " - " +
+                cardSwipeTxnPojo.getCardName() + " - xx-" +
+                cardSwipeTxnPojo.getLast4Digits();
     }
 
     public TransactionPojo(TransactionPojo transactionPojo) {

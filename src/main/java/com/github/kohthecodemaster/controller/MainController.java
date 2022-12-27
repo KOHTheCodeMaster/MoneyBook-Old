@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +39,7 @@ public class MainController {
 
         testStubFromJson();
 //        testTxnProcessing();
-        processCardSwipeTransactionPojoList();
+//        processCardSwipeTransactionPojoList();
 
     }
 
@@ -57,15 +58,13 @@ public class MainController {
             BigDecimal amount = cardSwipeTransactionPojo.getAmount();
             String targetAccountName = "PayTM Business Wallet";
             String category = "Swipe - PayTM";
-            String note = "Swipe - PayTM";  //  note is same as Category - "Swipe - PayTM"
 
             TransactionPojo transactionPojo = new TransactionPojo(
                     cardSwipeTransactionPojo,
                     id.get(),
                     amount,
                     targetAccountName,
-                    category,
-                    note
+                    category
             );
             newTransactionPojoList.add(transactionPojo);
 
@@ -73,18 +72,16 @@ public class MainController {
             if (cardSwipeTransactionPojo.getMdr().compareTo(BigDecimal.ZERO) != 0) {
 
                 id.set(id.get() + 1);   //  Increment Id by 1
-                amount = cardSwipeTransactionPojo.getMdr();
+                amount = cardSwipeTransactionPojo.getMdr().setScale(2, RoundingMode.HALF_UP);
                 targetAccountName = "PayTM Business Wallet";
-                category = "Swipe - PayTM";
-                note = "MDR Fees for Prepaid Card - ";
+                category = "MDR";
 
                 transactionPojo = new TransactionPojo(
                         cardSwipeTransactionPojo,
                         id.get(),
                         amount,
                         targetAccountName,
-                        category,
-                        note
+                        category
                 );
                 newTransactionPojoList.add(transactionPojo);
 
@@ -104,6 +101,10 @@ public class MainController {
 //        testingHelper.testTransactionPojoListFromJson();
 //        testingHelper.testAccountPojoListFromJson();
 //        testingHelper.testCreditCardPojoListFromJson();
+//        testingHelper.testCardSwipePojoListFromJson(creditCardsMap);
+        testingHelper.checkDuplicateCardEntries();
+
+
 //        testingHelper.testCardSwipePojoListFromJson(creditCardsMap);
 
     }
