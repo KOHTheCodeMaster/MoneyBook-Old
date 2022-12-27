@@ -5,12 +5,15 @@ import com.github.kohthecodemaster.pojo.CardSwipeTransactionPojo;
 import com.github.kohthecodemaster.pojo.CreditCardPojo;
 import com.github.kohthecodemaster.pojo.TransactionPojo;
 import com.github.kohthecodemaster.utils.TestingHelper;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainController {
 
@@ -35,6 +38,63 @@ public class MainController {
 
         testStubFromJson();
 //        testTxnProcessing();
+        processCardSwipeTransactionPojoList();
+
+    }
+
+    /**
+     * Converting Card Swipe Transaction Pojo List to Transaction Pojo List
+     * It adds additional MDR Entries in the form of Transaction Pojo
+     */
+    private void processCardSwipeTransactionPojoList() {
+
+        List<TransactionPojo> newTransactionPojoList = new ArrayList<>();
+        AtomicInteger id = new AtomicInteger(0);
+
+        cardSwipeTransactionPojoList.forEach(cardSwipeTransactionPojo -> {
+
+            id.set(id.get() + 1);   //  Increment Id by 1
+            BigDecimal amount = cardSwipeTransactionPojo.getAmount();
+            String targetAccountName = "PayTM Business Wallet";
+            String category = "Swipe - PayTM";
+            String note = "Swipe - PayTM";  //  note is same as Category - "Swipe - PayTM"
+
+            TransactionPojo transactionPojo = new TransactionPojo(
+                    cardSwipeTransactionPojo,
+                    id.get(),
+                    amount,
+                    targetAccountName,
+                    category,
+                    note
+            );
+            newTransactionPojoList.add(transactionPojo);
+
+            //  Additional MDR Transaction Pojo if card swipe transaction pojo has MDR != 0
+            if (cardSwipeTransactionPojo.getMdr().compareTo(BigDecimal.ZERO) != 0) {
+
+                id.set(id.get() + 1);   //  Increment Id by 1
+                amount = cardSwipeTransactionPojo.getMdr();
+                targetAccountName = "PayTM Business Wallet";
+                category = "Swipe - PayTM";
+                note = "MDR Fees for Prepaid Card - ";
+
+                transactionPojo = new TransactionPojo(
+                        cardSwipeTransactionPojo,
+                        id.get(),
+                        amount,
+                        targetAccountName,
+                        category,
+                        note
+                );
+                newTransactionPojoList.add(transactionPojo);
+
+            }
+
+        });
+
+        String strJson = new Gson().toJson(newTransactionPojoList);
+        System.out.println("Transaction Pojo List including MDR Txn (Parsed from Card Swipe Txn Pojo List):\n");
+        System.out.println(strJson);
 
     }
 
@@ -44,7 +104,7 @@ public class MainController {
 //        testingHelper.testTransactionPojoListFromJson();
 //        testingHelper.testAccountPojoListFromJson();
 //        testingHelper.testCreditCardPojoListFromJson();
-        testingHelper.testCardSwipePojoListFromJson(creditCardsMap);
+//        testingHelper.testCardSwipePojoListFromJson(creditCardsMap);
 
     }
 
