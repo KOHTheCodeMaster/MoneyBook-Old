@@ -1,6 +1,7 @@
 package com.github.kohthecodemaster.controller;
 
 import com.github.kohthecodemaster.pojo.AccountPojo;
+import com.github.kohthecodemaster.pojo.CardSwipeTransactionPojo;
 import com.github.kohthecodemaster.pojo.CreditCardPojo;
 import com.github.kohthecodemaster.pojo.TransactionPojo;
 import com.github.kohthecodemaster.utils.TestingHelper;
@@ -16,10 +17,12 @@ public class MainController {
     public static final File transactionJsonFile = new File("src/main/resources/stub/transactions.json");
     public static final File accountJsonFile = new File("src/main/resources/stub/accounts.json");
     public static final File creditCardJsonFile = new File("src/main/resources/stub/credit-cards.json");
+    public static final File cardSwipeTransactionJsonFile = new File("src/main/resources/stub/card-swipe-transaction.json");
 
     private Map<String, AccountPojo> accountMap;
     private Map<String, CreditCardPojo> creditCardsMap;
     private List<TransactionPojo> transactionPojoList;
+    private List<CardSwipeTransactionPojo> cardSwipeTransactionPojoList;
 
     public void major() {
 
@@ -30,17 +33,18 @@ public class MainController {
 
     private void testing() {
 
-//        testStubFromJson();
-        testTxnProcessing();
+        testStubFromJson();
+//        testTxnProcessing();
 
     }
 
     private void testStubFromJson() {
 
-        TestingHelper testingHelper = new TestingHelper(transactionJsonFile, accountJsonFile, creditCardJsonFile);
-        testingHelper.testTransactionPojoListFromJson();
-        testingHelper.testAccountPojoListFromJson();
-        testingHelper.testCreditCardPojoListFromJson();
+        TestingHelper testingHelper = new TestingHelper(transactionJsonFile, accountJsonFile, creditCardJsonFile, cardSwipeTransactionJsonFile);
+//        testingHelper.testTransactionPojoListFromJson();
+//        testingHelper.testAccountPojoListFromJson();
+//        testingHelper.testCreditCardPojoListFromJson();
+        testingHelper.testCardSwipePojoListFromJson(creditCardsMap);
 
     }
 
@@ -133,6 +137,7 @@ public class MainController {
         initializeAccountsMap();
         initializeCreditCardsMap();
         initializeTransactionList();
+        initializeCardSwipeTransactionPojoList();
 
     }
 
@@ -154,6 +159,10 @@ public class MainController {
 
     private void initializeTransactionList() {
         this.transactionPojoList = TransactionPojo.loadTransactionPojoListFromJson(transactionJsonFile);
+    }
+
+    private void initializeCardSwipeTransactionPojoList() {
+        this.cardSwipeTransactionPojoList = CardSwipeTransactionPojo.loadCardSwipeTransactionPojoListFromJson(cardSwipeTransactionJsonFile);
     }
 
 }

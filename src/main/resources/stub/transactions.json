@@ -2,40 +2,36 @@
   {
     "Id": 1,
     "Date": "25 Feb 2022",
-    "Source Account": "PayTM Business Wallet",
+    "Source Account": "Acc 1",
     "Target Account": "",
     "Category": "Manual",
-    "Transaction Type": "Income",
     "Amount": 100000,
     "Note": "Initial Seed Funding"
   },
   {
     "Id": 2,
     "Date": "26 Feb 2022",
-    "Source Account": "PayTM Business Wallet",
+    "Source Account": "Acc 1",
     "Target Account": "",
     "Category": "Manual",
-    "Transaction Type": "Expense",
     "Amount": 5000,
     "Note": "Partial Return Back Seed Funding - 95K Left"
   },
   {
     "Id": 3,
     "Date": "27 Feb 2022",
-    "Source Account": "PayTM Business Wallet",
+    "Source Account": "Acc 1",
     "Target Account": "",
     "Category": "Manual",
-    "Transaction Type": "Expense",
     "Amount": 85000,
     "Note": "Partial Return Back Seed Funding - 10K Left"
   },
   {
     "Id": 4,
     "Date": "28 Mar 2022",
-    "Source Account": "PayTM Business Wallet",
+    "Source Account": "Acc 1",
     "Target Account": "4004",
     "Category": "",
-    "Transaction Type": "Transfer",
     "Amount": 2000,
     "Note": "Credit Card Bill Payment",
     "Credit Card Description": "KOH Amazon ICICI xx-4004"
@@ -44,9 +40,8 @@
     "Id": 5,
     "Date": "28 Mar 2022",
     "Source Account": "0000",
-    "Target Account": "PayTM Business Wallet",
+    "Target Account": "Acc 1",
     "Category": "",
-    "Transaction Type": "Transfer",
     "Amount": 3000,
     "Note": "Credit Card Bill Payment",
     "Credit Card Description": "Papa Amazon ICICI xx-0000"
@@ -54,10 +49,9 @@
   {
     "Id": 6,
     "Date": "28 Mar 2022",
-    "Source Account": "BillPe Kotak",
-    "Target Account": "PayTM Business Wallet",
+    "Source Account": "Acc 2",
+    "Target Account": "Acc 1",
     "Category": "",
-    "Transaction Type": "Transfer",
     "Amount": 5000,
     "Note": "Manual UPI Entry for Maintaining Balance."
   }

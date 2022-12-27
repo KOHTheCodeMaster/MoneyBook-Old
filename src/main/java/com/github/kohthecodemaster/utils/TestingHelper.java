@@ -1,22 +1,27 @@
 package com.github.kohthecodemaster.utils;
 
 import com.github.kohthecodemaster.pojo.AccountPojo;
+import com.github.kohthecodemaster.pojo.CardSwipeTransactionPojo;
 import com.github.kohthecodemaster.pojo.CreditCardPojo;
 import com.github.kohthecodemaster.pojo.TransactionPojo;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 public class TestingHelper {
 
+    public static int counter;
     public final File transactionJsonFile;
     public final File accountJsonFile;
     public final File creditCardJsonFile;
+    public final File cardSwipeTransactionJsonFile;
 
-    public TestingHelper(File transactionJsonFile, File accountJsonFile, File creditCardJsonFile) {
+    public TestingHelper(File transactionJsonFile, File accountJsonFile, File creditCardJsonFile, File cardSwipeTransactionJsonFile) {
         this.transactionJsonFile = transactionJsonFile;
         this.accountJsonFile = accountJsonFile;
         this.creditCardJsonFile = creditCardJsonFile;
+        this.cardSwipeTransactionJsonFile = cardSwipeTransactionJsonFile;
     }
 
     public void testTransactionPojoListFromJson() {
@@ -47,4 +52,32 @@ public class TestingHelper {
     }
 
 
+    public void testCardSwipePojoListFromJson(Map<String, CreditCardPojo> creditCardsMap) {
+
+        List<CardSwipeTransactionPojo> cardSwipeTransactionPojoList = CardSwipeTransactionPojo.loadCardSwipeTransactionPojoListFromJson(cardSwipeTransactionJsonFile);
+
+//        cardSwipeTransactionPojoList.forEach(System.out::println);
+
+        cardSwipeTransactionPojoList.forEach(cardSwipeTransactionPojo -> {
+
+            CreditCardPojo creditCardPojo = creditCardsMap.get(cardSwipeTransactionPojo.getLast4Digits());
+            String cardName = creditCardPojo != null ? creditCardPojo.getCardName() : cardSwipeTransactionPojo.getCardName();
+
+            if (!creditCardPojo.getCardName().equals(cardSwipeTransactionPojo.getCardName())) {
+                System.out.println("Card Name Mismatch: \n" +
+                        creditCardPojo.getCardName() + " ----> " +
+                        cardSwipeTransactionPojo.getCardName() + " | " +
+                        cardSwipeTransactionPojo.getId());
+                counter++;
+                cardSwipeTransactionPojo.setCardName(cardName);
+            }
+
+            System.out.println(cardSwipeTransactionPojo);
+
+        });
+
+        System.out.println("\nCard Name Mismatch Count: " + counter);
+        System.out.println("Card Swipe Transaction Pojo List Size: " + cardSwipeTransactionPojoList.size());
+
+    }
 }

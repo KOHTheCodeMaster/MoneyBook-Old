@@ -1,0 +1,29 @@
+[
+  {
+    "Id": 1,
+    "Date": "08-Apr-2022",
+    "Last 4 Digits": "4199",
+    "Card Holder Name": "KOH",
+    "Card Name": "PostPe",
+    "Amount": 100,
+    "MDR": 2.5
+  },
+  {
+    "Id": 2,
+    "Date": "08-Apr-2022",
+    "Last 4 Digits": 4004,
+    "Card Holder Name": "KOH",
+    "Card Name": "Amazon ICICI",
+    "Amount": 90000,
+    "MDR": 0
+  },
+  {
+    "Id": 3,
+    "Date": "15-Apr-2022",
+    "Last 4 Digits": "0000",
+    "Card Holder Name": "Papa",
+    "Card Name": "Amazon ICICI",
+    "Amount": 5000,
+    "MDR": 0
+  }
+]

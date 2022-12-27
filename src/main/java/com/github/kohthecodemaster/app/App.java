@@ -19,7 +19,11 @@ public class App {
 
     private void major() {
 
+        System.out.println("Begin.\n");
+
         init();
+
+        System.out.println("\nEnd.");
 
     }
 

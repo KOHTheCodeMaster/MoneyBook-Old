@@ -14,5 +14,13 @@
     "Card Name": "Amazon ICICI",
     "Balance": 50000,
     "Max Limit": 50000
+  },
+  {
+    "Id": 3,
+    "Last 4 Digits": "4199",
+    "Card Holder Name": "KOH",
+    "Card Name": "PostPe",
+    "Balance": 50000,
+    "Max Limit": 50000
   }
 ]
