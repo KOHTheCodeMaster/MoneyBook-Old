@@ -70,29 +70,19 @@ public class AccountPojo {
 
     public static void transferBalance(AccountPojo sourceAccountPojo, CreditCardPojo creditCardPojo, TransactionPojo transactionPojo) {
 
-        BigDecimal sourceBalance = creditCardPojo.getBalance();
-        BigDecimal targetBalance = sourceAccountPojo.getBalance();
+        BigDecimal sourceBalance = sourceAccountPojo.getBalance();
+        BigDecimal targetBalance = creditCardPojo.getBalance();
 
-        targetBalance = targetBalance.add(transactionPojo.getAmount());          //  Add Amount to Target Balance
         sourceBalance = sourceBalance.subtract(transactionPojo.getAmount());     //  Deduct Amount from Source Balance
+        targetBalance = targetBalance.add(transactionPojo.getAmount());          //  Add Amount to Target Balance
 
         //  Update target & source balance
-        sourceAccountPojo.setBalance(targetBalance);
-        creditCardPojo.setBalance(sourceBalance);
+        sourceAccountPojo.setBalance(sourceBalance);
+        creditCardPojo.setBalance(targetBalance);
 
         sourceAccountPojo.logTransaction(transactionPojo);
         creditCardPojo.logTransaction(new TransactionPojo(transactionPojo));
 
-    }
-
-    public void creditBalance(TransactionPojo transactionPojo) {
-        balance = balance.add(transactionPojo.getAmount());
-        logTransaction(transactionPojo);
-    }
-
-    public void debitBalance(TransactionPojo transactionPojo) {
-        balance = balance.subtract(transactionPojo.getAmount());
-        logTransaction(transactionPojo);
     }
 
     public void logTransaction(TransactionPojo transactionPojo) {

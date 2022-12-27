@@ -3,7 +3,7 @@ package com.github.kohthecodemaster.controller;
 import com.github.kohthecodemaster.pojo.AccountPojo;
 import com.github.kohthecodemaster.pojo.CreditCardPojo;
 import com.github.kohthecodemaster.pojo.TransactionPojo;
-import com.github.kohthecodemaster.pojo.TransactionType;
+import com.github.kohthecodemaster.utils.TestingHelper;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -30,19 +30,23 @@ public class MainController {
 
     private void testing() {
 
-//        TestingHelper testingHelper = new TestingHelper(transactionJsonFile, accountJsonFile, creditCardJsonFile);
-//        testingHelper.testTransactionPojoListFromJson();
-//        testingHelper.testAccountPojoListFromJson();
-//        testingHelper.testCreditCardPojoListFromJson();
-
+//        testStubFromJson();
         testTxnProcessing();
+
+    }
+
+    private void testStubFromJson() {
+
+        TestingHelper testingHelper = new TestingHelper(transactionJsonFile, accountJsonFile, creditCardJsonFile);
+        testingHelper.testTransactionPojoListFromJson();
+        testingHelper.testAccountPojoListFromJson();
+        testingHelper.testCreditCardPojoListFromJson();
 
     }
 
     public void testTxnProcessing() {
 
         transactionPojoList.forEach(this::processTxn);
-
         summary();
 
     }
@@ -52,6 +56,7 @@ public class MainController {
         BigDecimal totalAccounts = BigDecimal.ZERO;
         BigDecimal totalCards = BigDecimal.ZERO;
 
+        System.out.println("\nAccounts Summary:");
         for (Map.Entry<String, AccountPojo> entry : accountMap.entrySet()) {
             String strAccountName = entry.getKey();
             AccountPojo accountPojo = entry.getValue();
@@ -61,6 +66,7 @@ public class MainController {
             }
         }
 
+        System.out.println("\nCredit Cards Summary:");
         for (Map.Entry<String, CreditCardPojo> entry : creditCardsMap.entrySet()) {
             String last4Digits = entry.getKey();
             CreditCardPojo creditCardPojo = entry.getValue();
@@ -70,11 +76,11 @@ public class MainController {
             }
         }
 
-        System.out.println("\n======\n");
-        AccountPojo accountPojo = accountMap.get("PayTM Business Wallet");
-        accountPojo.getTransactionPojoList().forEach(System.out::println);
+//        System.out.println("\n======\n");
+//        AccountPojo accountPojo = accountMap.get("BillPe Kotak");
+//        accountPojo.getTransactionPojoList().forEach(System.out::println);
 
-        System.out.println("Acc Total: " + totalAccounts + " | Cards Total: " + totalCards + " | Diff: " + totalAccounts.add(totalCards));
+        System.out.println("\nAcc. Total: " + totalAccounts + " | Cards Total: " + totalCards + " | Diff: " + totalAccounts.add(totalCards));
 
     }
 
@@ -82,18 +88,10 @@ public class MainController {
 
 //        System.out.println("Processing - Begin.");
 
-//        System.out.println(transactionPojo);
+        try {
 
-        AccountPojo sourceAccountPojo = accountMap.get(transactionPojo.getSourceAccount());
-
-        if (transactionPojo.getTransactionType() == TransactionType.Income)
-            sourceAccountPojo.creditBalance(transactionPojo);
-        else if (transactionPojo.getTransactionType() == TransactionType.Expense)
-            sourceAccountPojo.debitBalance(transactionPojo);
-        else if (transactionPojo.getTransactionType() == TransactionType.Transfer) {
-
+            AccountPojo sourceAccountPojo = accountMap.get(transactionPojo.getSourceAccount());
             AccountPojo targetAccountPojo = accountMap.get(transactionPojo.getTargetAccount());
-            BigDecimal amount = transactionPojo.getAmount();
 
             //  Transfer Amount from Source to Target Account based on Account & Credit Card scenario
             if (sourceAccountPojo != null &&
@@ -119,8 +117,11 @@ public class MainController {
             } else {
                 System.out.println("INVALID Scenario - Failed to Process Transaction:\n" + transactionPojo);
             }
-        } else {
-            System.out.println("INVALID Scenario - Failed to Process Transaction:\n" + transactionPojo);
+
+        } catch (Exception e) {
+            System.out.println("Failed to Process - Transaction Pojo: " + transactionPojo);
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
 //        System.out.println("Processing - Completed.");

@@ -21,8 +21,6 @@ public class TransactionPojo {
     String targetAccount;
     @SerializedName("Category")
     String category;
-    @SerializedName("Transaction Type")
-    TransactionType transactionType;
     @SerializedName("Amount")
     BigDecimal amount;
     @SerializedName("Note")
@@ -38,7 +36,6 @@ public class TransactionPojo {
         this.sourceAccount = transactionPojo.getSourceAccount();
         this.targetAccount = transactionPojo.getTargetAccount();
         this.category = transactionPojo.getCategory();
-        this.transactionType = transactionPojo.getTransactionType();
         this.amount = transactionPojo.getAmount();
         this.note = transactionPojo.getNote();
         this.creditCardDescription = transactionPojo.getCreditCardDescription();
@@ -63,7 +60,6 @@ public class TransactionPojo {
                 "\nSource Account: " + sourceAccount +
                 "\nTarget Account: " + targetAccount +
                 "\nCategory: " + category +
-                "\nTransaction Type: " + transactionType +
                 "\nAmount: " + amount +
                 "\nNote: " + note +
                 "\nCredit Card Description: " + creditCardDescription +
@@ -109,14 +105,6 @@ public class TransactionPojo {
 
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public TransactionType getTransactionType() {
-        return transactionType;
-    }
-
-    public void setTransactionType(TransactionType transactionType) {
-        this.transactionType = transactionType;
     }
 
     public BigDecimal getAmount() {
