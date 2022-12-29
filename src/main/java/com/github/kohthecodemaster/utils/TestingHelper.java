@@ -1,7 +1,7 @@
 package com.github.kohthecodemaster.utils;
 
 import com.github.kohthecodemaster.pojo.AccountPojo;
-import com.github.kohthecodemaster.pojo.CardSwipeTransactionPojo;
+import com.github.kohthecodemaster.pojo.CardSwipePojo;
 import com.github.kohthecodemaster.pojo.CreditCardPojo;
 import com.github.kohthecodemaster.pojo.TransactionPojo;
 
@@ -9,23 +9,11 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TestingHelper {
 
-    public static int counter;
-    public final File transactionJsonFile;
-    public final File accountJsonFile;
-    public final File creditCardJsonFile;
-    public final File cardSwipeTransactionJsonFile;
-
-    public TestingHelper(File transactionJsonFile, File accountJsonFile, File creditCardJsonFile, File cardSwipeTransactionJsonFile) {
-        this.transactionJsonFile = transactionJsonFile;
-        this.accountJsonFile = accountJsonFile;
-        this.creditCardJsonFile = creditCardJsonFile;
-        this.cardSwipeTransactionJsonFile = cardSwipeTransactionJsonFile;
-    }
-
-    public void testTransactionPojoListFromJson() {
+    public static void testMainTransactionPojoListFromJson(File transactionJsonFile) {
 
         List<TransactionPojo> transactionPojoList = TransactionPojo.loadTransactionPojoListFromJson(transactionJsonFile);
 
@@ -34,7 +22,7 @@ public class TestingHelper {
 
     }
 
-    public void testAccountPojoListFromJson() {
+    public static void testAccountPojoListFromJson(File accountJsonFile) {
 
         List<AccountPojo> accountPojoList = AccountPojo.loadAccountPojoListFromJson(accountJsonFile);
 
@@ -43,7 +31,7 @@ public class TestingHelper {
 
     }
 
-    public void testCreditCardPojoListFromJson() {
+    public static void testCreditCardPojoListFromJson(File creditCardJsonFile) {
 
         List<CreditCardPojo> creditCardPojoList = CreditCardPojo.loadCreditCardPojoListFromJson(creditCardJsonFile);
 
@@ -52,36 +40,47 @@ public class TestingHelper {
 
     }
 
-    public void testCardSwipePojoListFromJson(Map<String, CreditCardPojo> creditCardsMap) {
+    public static void testCardSwipePojoListFromJson(File cardSwipeJsonFile) {
 
-        List<CardSwipeTransactionPojo> cardSwipeTransactionPojoList = CardSwipeTransactionPojo.loadCardSwipeTransactionPojoListFromJson(cardSwipeTransactionJsonFile);
+        List<CardSwipePojo> cardSwipePojoList = CardSwipePojo.loadCardSwipePojoListFromJson(cardSwipeJsonFile);
 
-//        cardSwipeTransactionPojoList.forEach(System.out::println);
+        cardSwipePojoList.forEach(System.out::println);
+        System.out.println("Size: " + cardSwipePojoList.size());
 
-        cardSwipeTransactionPojoList.forEach(cardSwipeTransactionPojo -> {
+    }
 
-            CreditCardPojo creditCardPojo = creditCardsMap.get(cardSwipeTransactionPojo.getLast4Digits());
-            String cardName = creditCardPojo != null ? creditCardPojo.getCardName() : cardSwipeTransactionPojo.getCardName();
+    public static void testCardNameMismatch(Map<String, CreditCardPojo> creditCardsMap, File cardSwipeJsonFile) {
 
-            if (!creditCardPojo.getCardName().equals(cardSwipeTransactionPojo.getCardName())) {
+        AtomicInteger counter = new AtomicInteger();
+
+        List<CardSwipePojo> cardSwipePojoList = CardSwipePojo.loadCardSwipePojoListFromJson(cardSwipeJsonFile);
+
+//        cardSwipePojoList.forEach(System.out::println);
+
+        cardSwipePojoList.forEach(cardSwipePojo -> {
+
+            CreditCardPojo creditCardPojo = creditCardsMap.get(cardSwipePojo.getLast4Digits());
+            String cardName = creditCardPojo != null ? creditCardPojo.getCardName() : cardSwipePojo.getCardName();
+
+            if (!creditCardPojo.getCardName().equals(cardSwipePojo.getCardName())) {
                 System.out.println("Card Name Mismatch: \n" +
                         creditCardPojo.getCardName() + " ----> " +
-                        cardSwipeTransactionPojo.getCardName() + " | " +
-                        cardSwipeTransactionPojo.getId());
-                counter++;
-                cardSwipeTransactionPojo.setCardName(cardName);
+                        cardSwipePojo.getCardName() + " | " +
+                        cardSwipePojo.getId());
+                counter.getAndIncrement();
+                cardSwipePojo.setCardName(cardName);
             }
 
-            System.out.println(cardSwipeTransactionPojo);
+//            System.out.println(cardSwipePojo);
 
         });
 
         System.out.println("\nCard Name Mismatch Count: " + counter);
-        System.out.println("Card Swipe Transaction Pojo List Size: " + cardSwipeTransactionPojoList.size());
+        System.out.println("Card Swipe Pojo List Size: " + cardSwipePojoList.size());
 
     }
 
-    public void checkDuplicateCardEntries() {
+    public static void checkDuplicateCardEntries(File creditCardJsonFile) {
 
         List<CreditCardPojo> creditCardPojoList = CreditCardPojo.loadCreditCardPojoListFromJson(creditCardJsonFile);
         Map<String, Integer> map = new HashMap<>();

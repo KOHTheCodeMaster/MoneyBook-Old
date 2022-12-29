@@ -1,6 +1,8 @@
 package com.github.kohthecodemaster.utils;
 
+import com.github.kohthecodemaster.pojo.TransactionPojo;
 import com.google.gson.Gson;
+import stdlib.utils.KOHFilesUtil;
 
 import java.io.File;
 import java.io.FileReader;
@@ -25,4 +27,11 @@ public class JsonController {
         return resultList;
     }
 
+    public static void saveListToJsonFile(List<TransactionPojo> list, File jsonFile) {
+
+        String strJson = new Gson().toJson(list);
+        KOHFilesUtil.deleteFileNow(jsonFile);
+        KOHFilesUtil.writeStrToFile(strJson, jsonFile);
+
+    }
 }

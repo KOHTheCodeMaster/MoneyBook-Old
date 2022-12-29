@@ -92,10 +92,10 @@ public class AccountPojo {
 
     @Override
     public String toString() {
-        return "Id: " + id +
-                "Account Name: " + name +
-                "Balance: " + balance +
-                "Transaction Pojo List: " + transactionPojoList;
+        return "\nId: " + id +
+                "\nAccount Name: " + name +
+                "\nBalance: " + balance +
+                "\nTransaction Pojo List: " + transactionPojoList;
     }
 
     public Integer getId() {
