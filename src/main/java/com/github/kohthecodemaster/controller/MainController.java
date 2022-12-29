@@ -5,7 +5,7 @@ import com.github.kohthecodemaster.pojo.CardSwipePojo;
 import com.github.kohthecodemaster.pojo.CreditCardPojo;
 import com.github.kohthecodemaster.pojo.TransactionPojo;
 import com.github.kohthecodemaster.utils.JsonController;
-import com.github.kohthecodemaster.utils.TestingHelper;
+import com.github.kohthecodemaster.utils.ValidationHelper;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -31,9 +31,16 @@ public class MainController {
 
     public void major() {
 
-        init();
-        process();
+        validation();
+//        init();
+//        process();
 //        testing();
+
+    }
+
+    private void validation() {
+
+        ValidationHelper.validateJsonFiles(accountJsonFile, creditCardJsonFile, transactionForAccJsonFile, transactionsCardSwipeJsonFile);
 
     }
 
@@ -211,20 +218,20 @@ public class MainController {
 
             //  Transfer Amount from Source to Target Account based on Account & Credit Card scenario
             if (sourceAccountPojo != null &&
-                    targetAccountPojo != null) {
+                targetAccountPojo != null) {
 
                 //  Source & Target Account Both are NOT A Credit Card
                 AccountPojo.transferBalance(sourceAccountPojo, targetAccountPojo, transactionPojo);
 
             } else if (sourceAccountPojo == null &&
-                    targetAccountPojo != null) {
+                       targetAccountPojo != null) {
 
                 //  Source IS A Credit Card  AND  Target Account IS NOT A Credit Card
                 CreditCardPojo sourceCreditCardPojo = creditCardsMap.get(transactionPojo.getSourceAccount());//  Last 4 Digits
                 AccountPojo.transferBalance(sourceCreditCardPojo, targetAccountPojo, transactionPojo);
 
             } else if (sourceAccountPojo != null &&
-                    targetAccountPojo == null) {
+                       targetAccountPojo == null) {
 
                 //  Source Account IS NOT A Credit Card  AND  Target IS A Credit Card
                 CreditCardPojo targetCreditCardPojo = creditCardsMap.get(transactionPojo.getTargetAccount());//  Last 4 Digits
