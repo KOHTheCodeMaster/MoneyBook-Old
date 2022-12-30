@@ -42,15 +42,21 @@ public class CardSwipePojo {
 
         for (CardSwipePojo cardSwipePojo : cardSwipeList) {
 
-            TransactionPojo transactionPojo = cardSwipePojo.convertToTransactionPojo(++id,
-                    cardSwipePojo.getLast4Digits(), swipeTarget, swipeCategory, cardSwipePojo.getAmount());
+            TransactionPojo transactionPojo = new TransactionPojo(id, cardSwipePojo.getDate(),
+                    cardSwipePojo.getLast4Digits(), swipeTarget, swipeCategory, cardSwipePojo.getAmount(),
+                    cardSwipePojo.getCardHolderName() + " - " + cardSwipePojo.getCardName() +
+                    " - xx-" + cardSwipePojo.getLast4Digits()
+            );
             newTransactionPojoList.add(transactionPojo);
 
             //  Additional MDR Transaction Pojo if card swipe pojo has MDR value > 0
             if (cardSwipePojo.getMdr().compareTo(BigDecimal.ZERO) != 0) {
-                transactionPojo = cardSwipePojo.convertToTransactionPojo(++id, swipeTarget, mdrTarget, mdrCategory,
-                        cardSwipePojo.getMdr());
 
+                transactionPojo = new TransactionPojo(id, cardSwipePojo.getDate(),
+                        swipeTarget, mdrTarget, mdrCategory, cardSwipePojo.getMdr(),
+                        cardSwipePojo.getCardHolderName() + " - " + cardSwipePojo.getCardName() +
+                        " - xx-" + cardSwipePojo.getLast4Digits()
+                );
                 newTransactionPojoList.add(transactionPojo);
             }
 
@@ -59,18 +65,6 @@ public class CardSwipePojo {
         return newTransactionPojoList;
 
     }
-
-
-    public TransactionPojo convertToTransactionPojo(int id, String sourceAccountName, String targetAccountName,
-                                                    String category, BigDecimal amount) {
-
-        return new TransactionPojo(id, this.date, sourceAccountName, targetAccountName, category, amount, null,
-                this.cardHolderName + " - " + this.cardName + " - xx-" + this.last4Digits,
-                null
-        );
-
-    }
-
 
     public static List<CardSwipePojo> loadCardSwipePojoListFromJson(File jsonFile) {
 
@@ -86,14 +80,14 @@ public class CardSwipePojo {
     @Override
     public String toString() {
         return "CardSwipePojo{" +
-                "id=" + id +
-                ", date='" + date + '\'' +
-                ", last4Digits='" + last4Digits + '\'' +
-                ", cardHolderName='" + cardHolderName + '\'' +
-                ", cardName='" + cardName + '\'' +
-                ", amount=" + amount +
-                ", mdr=" + mdr +
-                '}';
+               "id=" + id +
+               ", date='" + date + '\'' +
+               ", last4Digits='" + last4Digits + '\'' +
+               ", cardHolderName='" + cardHolderName + '\'' +
+               ", cardName='" + cardName + '\'' +
+               ", amount=" + amount +
+               ", mdr=" + mdr +
+               '}';
     }
 
     public Integer getId() {

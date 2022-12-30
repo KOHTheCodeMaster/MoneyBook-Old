@@ -27,31 +27,19 @@ public class TransactionPojo {
     String note;
     @SerializedName("Credit Card Description")
     String creditCardDescription;
+    @SerializedName("Narration")
+    String narration;   //  Bank Statement - Transaction Description / Narration
     @SerializedName("Closing Balance")
     BigDecimal closingBalance;
 
-    public TransactionPojo(Integer transactionId, String date, String sourceAccount, String targetAccount, String category, BigDecimal amount, String note, String creditCardDescription, BigDecimal closingBalance) {
+    public TransactionPojo(Integer transactionId, String date, String sourceAccount, String targetAccount, String category, BigDecimal amount, String creditCardDescription) {
         this.transactionId = transactionId;
         this.date = date;
         this.sourceAccount = sourceAccount;
         this.targetAccount = targetAccount;
         this.category = category;
         this.amount = amount;
-        this.note = note;
         this.creditCardDescription = creditCardDescription;
-        this.closingBalance = closingBalance;
-    }
-
-    public TransactionPojo(CardSwipePojo cardSwipeTxnPojo, int id, BigDecimal amount, String targetAccount, String category) {
-        this.transactionId = id;
-        this.date = cardSwipeTxnPojo.getDate();
-        this.sourceAccount = cardSwipeTxnPojo.getLast4Digits();
-        this.targetAccount = targetAccount;
-        this.category = category;
-        this.amount = amount;
-        this.creditCardDescription = cardSwipeTxnPojo.getCardHolderName() + " - " +
-                cardSwipeTxnPojo.getCardName() + " - xx-" +
-                cardSwipeTxnPojo.getLast4Digits();
     }
 
     public TransactionPojo(TransactionPojo transactionPojo) {
@@ -64,6 +52,7 @@ public class TransactionPojo {
         this.note = transactionPojo.getNote();
         this.creditCardDescription = transactionPojo.getCreditCardDescription();
         this.closingBalance = transactionPojo.getClosingBalance();
+        this.narration = transactionPojo.getNarration();
     }
 
     public static List<TransactionPojo> loadTransactionPojoListFromJson(File jsonFile) {
@@ -80,15 +69,16 @@ public class TransactionPojo {
     @Override
     public String toString() {
         return "Transaction Id: " + transactionId +
-                "\nDate: " + date +
-                "\nSource Account: " + sourceAccount +
-                "\nTarget Account: " + targetAccount +
-                "\nCategory: " + category +
-                "\nAmount: " + amount +
-                "\nNote: " + note +
-                "\nCredit Card Description: " + creditCardDescription +
-                "\nClosing Balance: " + closingBalance +
-                "\n";
+               "\nDate: " + date +
+               "\nSource Account: " + sourceAccount +
+               "\nTarget Account: " + targetAccount +
+               "\nCategory: " + category +
+               "\nAmount: " + amount +
+               "\nNote: " + note +
+               "\nCredit Card Description: " + creditCardDescription +
+               "\nNarration: " + narration +
+               "\nClosing Balance: " + closingBalance +
+               "\n";
     }
 
     public Integer getTransactionId() {
@@ -153,6 +143,14 @@ public class TransactionPojo {
 
     public void setCreditCardDescription(String creditCardDescription) {
         this.creditCardDescription = creditCardDescription;
+    }
+
+    public String getNarration() {
+        return narration;
+    }
+
+    public void setNarration(String narration) {
+        this.narration = narration;
     }
 
     public BigDecimal getClosingBalance() {

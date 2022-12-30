@@ -5,6 +5,7 @@ import com.github.kohthecodemaster.pojo.CardSwipePojo;
 import com.github.kohthecodemaster.pojo.CreditCardPojo;
 import com.github.kohthecodemaster.pojo.TransactionPojo;
 import com.github.kohthecodemaster.utils.JsonController;
+import com.github.kohthecodemaster.utils.TestingHelper;
 import com.github.kohthecodemaster.utils.ValidationHelper;
 
 import java.io.File;
@@ -25,6 +26,7 @@ public class MainController {
     public static final File transactionsCardSwipeJsonFile = new File("src/main/resources/stub/transactions-card-swipe.json");
     public static final File processedCardSwipeJsonFile = new File("src/main/resources/stub/transactions-processed-card-swipe.json");
 
+    private static final String strEndDate = "26 May 2023";
     private Map<String, AccountPojo> accountMap;
     private Map<String, CreditCardPojo> creditCardsMap;
     private List<TransactionPojo> mainTransactionList;
@@ -40,7 +42,9 @@ public class MainController {
 
     private void validation() {
 
-        ValidationHelper.validateJsonFiles(accountJsonFile, creditCardJsonFile, transactionForAccJsonFile, transactionsCardSwipeJsonFile);
+        initializeMaps();
+        ValidationHelper.validateJsonFiles(accountMap.keySet(), creditCardsMap.keySet(), accountJsonFile, creditCardJsonFile,
+                transactionForAccJsonFile, transactionsCardSwipeJsonFile);
 
     }
 
@@ -159,7 +163,8 @@ public class MainController {
     private void testStubFromJson() {
 
 //        TestingHelper.testMainTransactionPojoListFromJson(transactionMainJsonFile);
-//        TestingHelper.testAccountPojoListFromJson(accountJsonFile);
+//        TestingHelper.testAccTransactionPojoListFromJson(transactionForAccJsonFile);
+        TestingHelper.testAccountPojoListFromJson(accountJsonFile);
 //        TestingHelper.testCreditCardPojoListFromJson(creditCardJsonFile);
 //        TestingHelper.testCardSwipePojoListFromJson(transactionsCardSwipeJsonFile);
 //        TestingHelper.testCardNameMismatch(creditCardsMap, transactionsCardSwipeJsonFile);
@@ -169,7 +174,17 @@ public class MainController {
 
     public void processMainTransactionList() {
 
-        mainTransactionList.forEach(this::processTransaction);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
+        LocalDate endDate = LocalDate.parse(strEndDate, dateTimeFormatter);
+
+        mainTransactionList.stream()
+                .filter(transactionPojo -> {
+                    //  Keep all transactions whose date is before or equal to endDate.
+                    LocalDate transactionDate = LocalDate.parse(transactionPojo.getDate(), dateTimeFormatter);
+                    return transactionDate.isBefore(endDate) || transactionDate.isEqual(endDate);
+                })
+                .forEach(this::processTransaction);
+
         summary();
 
     }
