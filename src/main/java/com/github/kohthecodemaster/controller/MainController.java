@@ -4,6 +4,7 @@ import com.github.kohthecodemaster.pojo.AccountPojo;
 import com.github.kohthecodemaster.pojo.CardSwipePojo;
 import com.github.kohthecodemaster.pojo.CreditCardPojo;
 import com.github.kohthecodemaster.pojo.TransactionPojo;
+import com.github.kohthecodemaster.utils.FileHelper;
 import com.github.kohthecodemaster.utils.JsonController;
 import com.github.kohthecodemaster.utils.TestingHelper;
 import com.github.kohthecodemaster.utils.ValidationHelper;
@@ -25,17 +26,22 @@ public class MainController {
     public static final File transactionForAccJsonFile = new File("src/main/resources/stub/transactions-acc.json");
     public static final File transactionsCardSwipeJsonFile = new File("src/main/resources/stub/transactions-card-swipe.json");
     public static final File processedCardSwipeJsonFile = new File("src/main/resources/stub/transactions-processed-card-swipe.json");
+    public static final File tempDir = new File("src/main/resources/temp/");
+    public static final File resultDir = new File("src/main/resources/result/");
 
     private static final String strEndDate = "26 May 2023";
+    private static final int TEMP_JSON_FILE_THRESHOLD_LIMIT = 100;
+
     private Map<String, AccountPojo> accountMap;
     private Map<String, CreditCardPojo> creditCardsMap;
     private List<TransactionPojo> mainTransactionList;
+    private Map<String, List<TransactionPojo>> resultMap;
 
     public void major() {
 
         validation();
-//        init();
-//        process();
+        init();
+        process();
 //        testing();
 
     }
@@ -52,12 +58,14 @@ public class MainController {
 
         processMainTransactionList();
 
+        saveItAll();
 
     }
 
     private void init() {
 
         initializeMaps();
+        FileHelper.initializeDirs(tempDir);
         initializeMainTransactionList();
 
     }
@@ -73,6 +81,9 @@ public class MainController {
         creditCardsMap = new HashMap<>();
         List<CreditCardPojo> creditCardPojoList = CreditCardPojo.loadCreditCardPojoListFromJson(creditCardJsonFile);
         creditCardPojoList.forEach(creditCardPojo -> creditCardsMap.put(creditCardPojo.getLast4Digits(), creditCardPojo));
+
+        //  Initialize Result Map
+        resultMap = new HashMap<>();
 
     }
 
@@ -150,6 +161,43 @@ public class MainController {
         //  Update transaction id according to size of the list
         transactionPojo.setTransactionId(transactionList.size() + 1);
         transactionList.add(transactionPojo);
+
+    }
+
+    private void saveItAll() {
+
+        saveTempJsonFiles();
+        processTempJsonFilesForResultDir();
+
+    }
+
+    private void saveTempJsonFiles() {
+
+        mainTransactionList.forEach(transactionPojo -> {
+
+            updateResultMap(transactionPojo, transactionPojo.getSourceAccount());
+            updateResultMap(transactionPojo, transactionPojo.getTargetAccount());
+
+        });
+
+        //  Save the remaining TransactionPojo lists for each account/card into temp json files.
+        resultMap.forEach((accountName, transactionPojoList) ->
+                FileHelper.saveListToJsonWithoutThresholdCheck(accountName, transactionPojoList, tempDir));
+
+    }
+
+    private void updateResultMap(TransactionPojo transactionPojo, String accountName) {
+
+        List<TransactionPojo> transactionPojoList = resultMap.computeIfAbsent(accountName, strAccountName -> new ArrayList<>());
+        transactionPojoList.add(transactionPojo);
+
+        FileHelper.saveListToJson(accountName, transactionPojoList, tempDir, TEMP_JSON_FILE_THRESHOLD_LIMIT);
+
+    }
+
+    private void processTempJsonFilesForResultDir() {
+
+        // TODO: 05-01-2023 - Merge each account json files into one & re-structure the result directory
 
     }
 
