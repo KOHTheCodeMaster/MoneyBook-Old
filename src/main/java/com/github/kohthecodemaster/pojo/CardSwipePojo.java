@@ -42,7 +42,7 @@ public class CardSwipePojo {
 
         for (CardSwipePojo cardSwipePojo : cardSwipeList) {
 
-            TransactionPojo transactionPojo = new TransactionPojo(id, cardSwipePojo.getDate(),
+            TransactionPojo transactionPojo = new TransactionPojo(++id, cardSwipePojo.getDate(),
                     cardSwipePojo.getLast4Digits(), swipeTarget, swipeCategory, cardSwipePojo.getAmount(),
                     cardSwipePojo.getCardHolderName() + " - " + cardSwipePojo.getCardName() +
                     " - xx-" + cardSwipePojo.getLast4Digits()
@@ -52,7 +52,7 @@ public class CardSwipePojo {
             //  Additional MDR Transaction Pojo if card swipe pojo has MDR value > 0
             if (cardSwipePojo.getMdr().compareTo(BigDecimal.ZERO) != 0) {
 
-                transactionPojo = new TransactionPojo(id, cardSwipePojo.getDate(),
+                transactionPojo = new TransactionPojo(++id, cardSwipePojo.getDate(),
                         swipeTarget, mdrTarget, mdrCategory, cardSwipePojo.getMdr(),
                         cardSwipePojo.getCardHolderName() + " - " + cardSwipePojo.getCardName() +
                         " - xx-" + cardSwipePojo.getLast4Digits()

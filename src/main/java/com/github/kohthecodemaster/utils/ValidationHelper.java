@@ -17,16 +17,16 @@ public class ValidationHelper {
     public static boolean validateJsonFiles(Set<String> accountSet, Set<String> creditCardSet, File... jsonFiles) {
 
         boolean isValid = true;
-        List<File> missingFiles = new ArrayList<>();
+        List<File> invalidJsonFiles = new ArrayList<>();
 
         Arrays.stream(jsonFiles).forEach(file -> {
-            if (!file.isFile()) missingFiles.add(file);
+            if (!file.isFile()) invalidJsonFiles.add(file);
         });
 
-        if (!missingFiles.isEmpty()) {
+        if (!invalidJsonFiles.isEmpty()) {
             System.out.println("Json Files Validation Failed.\n" +
                                "Following Json Files are missing:\n");
-            missingFiles.forEach(file -> System.out.println(file.getAbsolutePath()));
+            invalidJsonFiles.forEach(file -> System.out.println(file.getAbsolutePath()));
             return false;
         }
 

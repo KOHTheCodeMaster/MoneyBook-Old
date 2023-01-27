@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MainController {
 
@@ -29,6 +30,7 @@ public class MainController {
     public static final File tempDir = new File("src/main/resources/temp/");
     public static final File resultDir = new File("src/main/resources/result/");
 
+    //    private static final String strEndDate = "01 Mar 2022";
     private static final String strEndDate = "26 May 2023";
     private static final int TEMP_JSON_FILE_THRESHOLD_LIMIT = 100;
 
@@ -39,8 +41,8 @@ public class MainController {
 
     public void major() {
 
-        validation();
         init();
+        validation();
         process();
 //        testing();
 
@@ -48,13 +50,17 @@ public class MainController {
 
     private void validation() {
 
-        initializeMaps();
-        ValidationHelper.validateJsonFiles(accountMap.keySet(), creditCardsMap.keySet(), accountJsonFile, creditCardJsonFile,
+        boolean isValid = ValidationHelper.validateJsonFiles(accountMap.keySet(), creditCardsMap.keySet(), accountJsonFile, creditCardJsonFile,
                 transactionForAccJsonFile, transactionsCardSwipeJsonFile);
+
+        if (!isValid) System.out.println("Json Files Validation Failed.\n");
+        else System.out.println("JSON File Validation Complete.");
 
     }
 
     private void process() {
+
+        initializeMainTransactionList();
 
         processMainTransactionList();
 
@@ -65,8 +71,7 @@ public class MainController {
     private void init() {
 
         initializeMaps();
-        FileHelper.initializeDirs(tempDir);
-        initializeMainTransactionList();
+        FileHelper.initializeDirs(accountMap, creditCardsMap, tempDir, resultDir);
 
     }
 
@@ -87,6 +92,11 @@ public class MainController {
 
     }
 
+    /**
+     * 1. Load transactionsCardSwipeJsonFile and Process Card Swipe List and convert into Transaction List
+     * (Source To Target form) & save it as processedCardSwipeJsonFile
+     * 2. Initialize & Save transactionMainJsonFile Using transactionForAccJsonFile & processedCardSwipeJsonFile
+     */
     private void initializeMainTransactionList() {
 
         //  Initialize Account Transaction List
@@ -106,9 +116,8 @@ public class MainController {
 
     /**
      * Merge Transaction List for Account & Cards using following criteria:
-     * 1. Add transactions to main list based on the date of transaction.
-     * 1. Same Date -> Account Transaction
-     * 1. Same Date -> Account Transaction
+     * 1. Add transactions to main list based on the earliest date of transaction.
+     * 2. In case of Same Date Txn. -> Account Txn. is prioritized Before Card Swipe Txn.
      */
     private ArrayList<TransactionPojo> mergeAccAndCardSwipeLists(List<TransactionPojo> transactionPojoListForAcc, List<TransactionPojo> transactionPojoListForCards) {
 
@@ -225,13 +234,15 @@ public class MainController {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
         LocalDate endDate = LocalDate.parse(strEndDate, dateTimeFormatter);
 
-        mainTransactionList.stream()
+        mainTransactionList = mainTransactionList.stream()
                 .filter(transactionPojo -> {
                     //  Keep all transactions whose date is before or equal to endDate.
                     LocalDate transactionDate = LocalDate.parse(transactionPojo.getDate(), dateTimeFormatter);
                     return transactionDate.isBefore(endDate) || transactionDate.isEqual(endDate);
                 })
-                .forEach(this::processTransaction);
+                .collect(Collectors.toList());
+
+        mainTransactionList.forEach(this::processTransaction);
 
         summary();
 
